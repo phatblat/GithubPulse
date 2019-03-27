@@ -8,7 +8,7 @@
 
 import Foundation
 
-typealias FetchCallback = ((Bool, [Int], Int, Int) -> Void)!
+typealias FetchCallback = ((Bool, [Int], Int, Int) -> Void)
 
 class Contributions {
   var username = ""
@@ -18,7 +18,7 @@ class Contributions {
   var streak = 0
   var succeeded = false
   var state = 0
-  var callback: FetchCallback = nil
+  var callback: FetchCallback? = nil
   let streakRegex = try? NSRegularExpression(pattern: "Current streak</span>\\s*<span[^>]*?>(\\d+)\\s*days", options: NSRegularExpression.Options.caseInsensitive)
   let dayRegex = try? NSRegularExpression(pattern: "<rect.*?data-count=\"(\\d+)\"", options: [])
   
@@ -41,7 +41,7 @@ class Contributions {
     }
   }
 
-  func fetch(_ username: String, completionBlock: FetchCallback) {
+  func fetch(_ username: String, completionBlock: @escaping FetchCallback) {
     self.username = username
     self.year = []
     self.callback = completionBlock
@@ -66,8 +66,8 @@ class Contributions {
   }
 
   fileprivate func invokeCallback(_ success: Bool) {
-    if callback != nil {
-      callback(success, commits, streak, today)
+    if let cb = callback {
+      cb(success, commits, streak, today)
     }
 
     self.callback = nil
