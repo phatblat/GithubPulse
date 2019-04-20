@@ -21,10 +21,6 @@ class Contributions {
   var callback: FetchCallback? = nil
   let streakRegex = try? NSRegularExpression(pattern: "Current streak</span>\\s*<span[^>]*?>(\\d+)\\s*days", options: NSRegularExpression.Options.caseInsensitive)
   let dayRegex = try? NSRegularExpression(pattern: "<rect.*?data-count=\"(\\d+)\"", options: [])
-  
-  class func fetch(_ username: String, completionBlock: FetchCallback) {
-    Contributions().fetch(username, completionBlock: completionBlock)
-  }
 
   fileprivate func baseFetch(_ URLString: String, completionBlock: @escaping (String) -> Void) {
     let url = URL(string: URLString)

@@ -87,7 +87,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
   func fetchCommits(_ username: String) {
     let dontNotify = parseData("dont_notify") as? Bool
     
-    Contributions.fetch(username) { (success, _, _, today) in
+    Contributions().fetch(username) { (success, _, _, today) in
       if success {
         self.updateIcon(today)
         

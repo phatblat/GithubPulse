@@ -19,7 +19,7 @@ class ContentViewController: NSViewController, XMLParserDelegate, WebPolicyDeleg
   func loadCalls() {
     self.calls = [:]
     self.calls["contributions"] = { (args) in
-      Contributions.fetch(args[0]) { (success, commits, streak, today) in
+      Contributions().fetch(args[0]) { (success, commits, streak, today) in
         if success {
           if args.count < 2 || args[1] == "true" {
             NotificationCenter.default.post(name: Notification.Name(rawValue: "check_icon"), object: nil, userInfo: ["today": today])
