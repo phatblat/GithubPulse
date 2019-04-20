@@ -91,7 +91,7 @@ class Contributions {
   func parseStreak(_ string: String, range: NSRange) {
     let streakMatch = streakRegex?.firstMatch(in: string, options: [], range: range)
     if streakMatch != nil {
-      if let streak = Int((string as NSString).substring(with: streakMatch!.rangeAt(1))) {
+      if let streak = Int((string as NSString).substring(with: streakMatch!.range(at: 1))) {
         self.streak = streak
       }
     }
@@ -102,7 +102,7 @@ class Contributions {
     if dayMatches != nil {
       var a = 30
       for dayMatch in dayMatches!.reversed() {
-        if let day = Int((string as NSString).substring(with: dayMatch.rangeAt(1))) {
+        if let day = Int((string as NSString).substring(with: dayMatch.range(at: 1))) {
           commits.insert(day, at: 0)
         }
 

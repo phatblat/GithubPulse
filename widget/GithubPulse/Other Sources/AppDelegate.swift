@@ -48,13 +48,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
       self.contentViewController.refresh(nil)
     }
     
-    self.statusItem = NSStatusBar.system().statusItem(withLength: 32)
+    self.statusItem = NSStatusBar.system.statusItem(withLength: 32)
     self.statusItem.title = "Github Pulse"
     self.statusItem.highlightMode = true
     self.statusItem.view = self.statusButton
     
     self.timer = Timer(fireAt: Date(), interval: 15*60, target: self, selector: #selector(AppDelegate.checkForCommits), userInfo: nil, repeats: true)
-    RunLoop.current.add(self.timer, forMode: RunLoopMode.defaultRunLoopMode)
+    RunLoop.current.add(self.timer, forMode: RunLoop.Mode.default)
   }
   
   deinit {
@@ -64,7 +64,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     self.timer = nil
   }
   
-  func checkForCommits() {
+  @objc func checkForCommits() {
     GithubUpdate.check()
     
     if let username = parseData("username") as? String {
@@ -151,7 +151,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     self.popover.closePopover(nil)
   }
   
-  func toggle(_: AnyObject) {
+  @objc func toggle(_: AnyObject) {
     if (self.open) {
       self.popover.closePopover(nil)
     } else {
@@ -165,7 +165,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     self.open = !self.open
   }
   
-  func _checkIconNotification(_ notification:Notification) {
+  @objc func _checkIconNotification(_ notification:Notification) {
     self.updateIcon(notification.userInfo?["today"] as! Int)
   }
   
@@ -173,7 +173,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     self.updateIcon(-1)
   }
   
-  func _checkUsernameNotification(_ notification:Notification) {
+  @objc func _checkUsernameNotification(_ notification:Notification) {
     if let username = self.parseData("username") as? String {
       self.fetchCommits(username)
     } else {

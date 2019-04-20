@@ -77,7 +77,7 @@ class ContentViewController: NSViewController, XMLParserDelegate, WebPolicyDeleg
     }
     
     self.calls["quit"] = { (args) in
-      NSApplication.shared().terminate(self)
+      NSApplication.shared.terminate(self)
     }
     
     self.calls["update"] = { (args) in
@@ -86,7 +86,7 @@ class ContentViewController: NSViewController, XMLParserDelegate, WebPolicyDeleg
 
     self.calls["open_url"] = { (args) in
       if let checkURL = URL(string: args[0]) {
-        NSWorkspace.shared().open(checkURL)
+        NSWorkspace.shared.open(checkURL)
       }
     }
   }
@@ -97,7 +97,7 @@ class ContentViewController: NSViewController, XMLParserDelegate, WebPolicyDeleg
     self.loadCalls()
   }
   
-  override init?(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+  override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
     self.calls = [:]
     super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     self.loadCalls()
@@ -133,8 +133,8 @@ class ContentViewController: NSViewController, XMLParserDelegate, WebPolicyDeleg
     if url.hasPrefix("osx:") {
       let matches = self.regex?.matches(in: url, options: [], range: NSMakeRange(0, url.count))
       if let match = matches?[0] {
-        let fn = (url as NSString).substring(with: match.rangeAt(1))
-        let args = (url as NSString).substring(with: match.rangeAt(2)).components(separatedBy: "%%")
+        let fn = (url as NSString).substring(with: match.range(at: 1))
+        let args = (url as NSString).substring(with: match.range(at: 2)).components(separatedBy: "%%")
         
         #if DEBUG
           print(fn, args)
