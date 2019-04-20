@@ -131,7 +131,7 @@ class ContentViewController: NSViewController, XMLParserDelegate, WebPolicyDeleg
     let url:String = request.url!.absoluteString.removingPercentEncoding!
 
     if url.hasPrefix("osx:") {
-      let matches = self.regex?.matches(in: url, options: [], range: NSMakeRange(0, url.characters.count))
+      let matches = self.regex?.matches(in: url, options: [], range: NSMakeRange(0, url.count))
       if let match = matches?[0] {
         let fn = (url as NSString).substring(with: match.rangeAt(1))
         let args = (url as NSString).substring(with: match.rangeAt(2)).components(separatedBy: "%%")
