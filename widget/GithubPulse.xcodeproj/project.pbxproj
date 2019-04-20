@@ -416,7 +416,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.tadeuzagallo.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "GithubPulse/Other Sources/BridgeHeader.h";
-				SWIFT_SWIFT3_OBJC_INFERENCE = On;
 				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
@@ -432,7 +431,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.tadeuzagallo.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "GithubPulse/Other Sources/BridgeHeader.h";
-				SWIFT_SWIFT3_OBJC_INFERENCE = On;
 				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
