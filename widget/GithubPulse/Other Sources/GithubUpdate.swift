@@ -86,7 +86,7 @@ class GithubUpdate {
       print("Downloading \(tag)...")
       NSURLConnection.sendAsynchronousRequest(request, queue: OperationQueue.main) { (_, data, _) in
         print("Download complete!")
-        try? data?.write(to: URL(fileURLWithPath: path), options: [.atomic])
+        ((try? data?.write(to: URL(fileURLWithPath: path), options: [.atomic])) as ()??)
         if self.install {
           self.extract(folder, tag: tag, path: path)
         }
