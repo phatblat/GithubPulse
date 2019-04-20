@@ -21,7 +21,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
   var timer:Timer!
   
   override init() {
-    self.contentViewController = ContentViewController(nibName: "ContentViewController", bundle: nil)!
+    self.contentViewController = ContentViewController(nibName: "ContentViewController", bundle: nil)
     self.popover = INPopoverController(contentViewController: self.contentViewController)
     
     self.popover.animates = false;
