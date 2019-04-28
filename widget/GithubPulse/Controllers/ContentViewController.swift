@@ -161,7 +161,7 @@ extension ContentViewController: WebResourceLoadDelegate {
   }
 
   func webView(_ sender: WebView!, resource identifier: Any!, didFailLoadingWithError error: Error!, from dataSource: WebDataSource!) {
-    debugPrint("didFailLoadingWithError: \(String(describing: error)), \(String(describing: dataSource.response.url))")
+    debugPrint("didFailLoadingWithError: \(String(describing: error)), \(String(describing: dataSource.response?.url))")
   }
 }
 
