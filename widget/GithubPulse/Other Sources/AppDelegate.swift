@@ -13,65 +13,71 @@ private var myContext = 0
 @NSApplicationMain
 
 class AppDelegate: NSObject, NSApplicationDelegate {
-  var open:Bool = false
-  var contentViewController:ContentViewController
-  var popover:INPopoverController
-  var statusItem:NSStatusItem!
-  var statusButton:CustomButton!
-  var timer:Timer!
-  
-  override init() {
-    self.contentViewController = ContentViewController(nibName: "ContentViewController", bundle: nil)
-    self.popover = INPopoverController(contentViewController: self.contentViewController)
+//  var window = MainWindow().window
+  var contentViewController: ContentViewController!
+  var popover: INPopoverController!
+
+  var open: Bool = false
+  var statusItem: NSStatusItem!
+  var statusButton: CustomButton!
+  var timer: Timer!
+
+  override init() {}
+
+  func applicationDidFinishLaunching(_ aNotification: Notification) {
+    contentViewController = ContentViewController(nibName: nil, bundle: nil)
+    popover = INPopoverController(contentViewController: contentViewController)
     
-    self.popover.animates = false;
-    self.popover.color = NSColor.white
-    self.popover.borderWidth = 1
-    self.popover.cornerRadius = 5;
-    self.popover.borderColor = NSColor(calibratedWhite: 0.76, alpha: 1)
-    
-    super.init()
+    popover.animates = false;
+    popover.color = NSColor.white
+    popover.borderWidth = 1
+    popover.cornerRadius = 5;
+    popover.borderColor = NSColor(calibratedWhite: 0.76, alpha: 1)
     
     NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate._checkUsernameNotification(_:)), name: NSNotification.Name( "check_username"), object: nil)
     NotificationCenter.default.addObserver(self, selector: #selector(AppDelegate._checkIconNotification(_:)), name: NSNotification.Name("check_icon"), object: nil)
     DistributedNotificationCenter.default().addObserver(self, selector: #selector(AppDelegate._darkModeChanged), name: NSNotification.Name("AppleInterfaceThemeChangedNotification"), object: nil)
 
-  }
-  
-  func applicationDidFinishLaunching(_ aNotification: Notification) {
-    self.statusButton = CustomButton(frame: NSRect(x: 0, y: 0, width: 32, height: 24))
-    self.statusButton.isBordered = false
-    self.statusButton.target = self
-    self.statusButton.action = #selector(AppDelegate.toggle(_:))
-    self.updateIcon(1)
-    self.statusButton.rightAction = { (_) in
+    statusButton = CustomButton(frame: NSRect(x: 0, y: 0, width: 32, height: 24))
+    statusButton.isBordered = false
+    statusButton.target = self
+    statusButton.action = #selector(AppDelegate.toggle(_:))
+    updateIcon(1)
+    statusButton.rightAction = { _ in
       self.contentViewController.refresh(nil)
     }
     
-    self.statusItem = NSStatusBar.system.statusItem(withLength: 32)
-    self.statusItem.title = "Github Pulse"
-    self.statusItem.highlightMode = true
-    self.statusItem.view = self.statusButton
+    statusItem = NSStatusBar.system.statusItem(withLength: 32)
+    statusItem.title = "Github Pulse"
+    statusItem.highlightMode = true
+    statusItem.view = statusButton
     
-    self.timer = Timer(fireAt: Date(), interval: 15*60, target: self, selector: #selector(AppDelegate.checkForCommits), userInfo: nil, repeats: true)
-    RunLoop.current.add(self.timer, forMode: RunLoop.Mode.default)
+    timer = Timer(fireAt: Date(), interval: 15*60, target: self, selector: #selector(AppDelegate.checkForCommits), userInfo: nil, repeats: true)
+    RunLoop.current.add(timer, forMode: RunLoop.Mode.default)
+
+    if let window = NSApplication.shared.mainWindow {
+      window.contentViewController = contentViewController
+      //window.showWindow(self)
+    } else {
+      print("ERROR: Unable to get a reference to the main window!")
+    }
   }
-  
+
   deinit {
     NotificationCenter.default.removeObserver(self)
     DistributedNotificationCenter.default().removeObserver(self)
-    self.timer.invalidate()
-    self.timer = nil
+    timer.invalidate()
+    timer = nil
   }
-  
+
   @objc func checkForCommits() {
     GithubUpdate.check()
-    
+
     if let username = parseData("username") as? String {
-      self.fetchCommits(username)
+      fetchCommits(username)
     }
   }
-  
+
   func parseData(_ key: String) -> AnyObject? {
     if let input = UserDefaults.standard.value(forKey: key) as? String {
       if let data = input.data(using: String.Encoding.utf8, allowLossyConversion: false) {
@@ -80,14 +86,14 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
       }
     }
-    
+
     return nil
   }
-  
+
   func fetchCommits(_ username: String) {
     let dontNotify = parseData("dont_notify") as? Bool
     
-    Contributions().fetch(username) { (success, _, _, today) in
+    Contributions().fetch(username) { success, _, _, today in
       if success {
         self.updateIcon(today)
         
@@ -104,10 +110,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var count:Int
     
     if _count == -1 {
-      count = self.lastIconCount
+      count = lastIconCount
     } else {
       count = _count
-      self.lastIconCount = count
+      lastIconCount = count
     }
     
     var imageName = count == 0 ?  "icon_notification" : "icon"
@@ -120,7 +126,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
       }
     }
     
-    self.statusButton.image = NSImage(named: imageName)
+    statusButton.image = NSImage(named: imageName)
   }
   
   func checkForNotification() {
@@ -147,37 +153,37 @@ class AppDelegate: NSObject, NSApplicationDelegate {
   }
 
   func applicationWillResignActive(_ notification: Notification) {
-    self.open = false
-    self.popover.closePopover(nil)
+    open = false
+    popover.closePopover(nil)
   }
   
   @objc func toggle(_: AnyObject) {
-    if (self.open) {
-      self.popover.closePopover(nil)
+    if open {
+      popover.closePopover(nil)
     } else {
-      let controller = self.popover.contentViewController as! ContentViewController
+      let controller = popover.contentViewController as! ContentViewController
       _ = controller.webView?.stringByEvaluatingJavaScript(from: "update(false)")
       
-      self.popover.presentPopover(from: self.statusItem.view!.bounds, in: self.statusItem.view!, preferredArrowDirection: INPopoverArrowDirection.up, anchorsToPositionView: true)
+      popover.presentPopover(from: statusItem.view!.bounds, in: statusItem.view!, preferredArrowDirection: INPopoverArrowDirection.up, anchorsToPositionView: true)
       NSApp.activate(ignoringOtherApps: true)
     }
-    
-    self.open = !self.open
+
+    open.toggle()
   }
   
   @objc func _checkIconNotification(_ notification:Notification) {
-    self.updateIcon(notification.userInfo?["today"] as! Int)
+    updateIcon(notification.userInfo?["today"] as! Int)
   }
   
   @objc func _darkModeChanged(_ notification:Notification) {
-    self.updateIcon(-1)
+    updateIcon(-1)
   }
   
   @objc func _checkUsernameNotification(_ notification:Notification) {
-    if let username = self.parseData("username") as? String {
-      self.fetchCommits(username)
+    if let username = parseData("username") as? String {
+      fetchCommits(username)
     } else {
-      self.updateIcon(1)
+      updateIcon(1)
     }
   }
 }

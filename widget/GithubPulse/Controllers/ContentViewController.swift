@@ -9,27 +9,26 @@
 import Cocoa
 import WebKit
 
-class ContentViewController: NSViewController, XMLParserDelegate, WebPolicyDelegate {
-  @IBOutlet weak var webView:WebView?
-  @IBOutlet weak var lastUpdate:NSTextField?
+class ContentViewController: NSViewController, XMLParserDelegate {
+  @IBOutlet var webView: WebView!
+  @IBOutlet var lastUpdate: NSTextField!
   
   var regex = try? NSRegularExpression(pattern: "^osx:(\\w+)\\((.*)\\)$", options: NSRegularExpression.Options.caseInsensitive)
-  var calls: [String: ([String]) -> Void]
+  var calls: [String: ([String]) -> Void] = [:]
   
   func loadCalls() {
-    self.calls = [:]
-    self.calls["contributions"] = { (args) in
+    calls["contributions"] = { [weak self] (args) in
       Contributions().fetch(args[0]) { (success, commits, streak, today) in
         if success {
           if args.count < 2 || args[1] == "true" {
             NotificationCenter.default.post(name: Notification.Name(rawValue: "check_icon"), object: nil, userInfo: ["today": today])
           }
         }
-        let _ = self.webView?.stringByEvaluatingJavaScript(from: "contributions(\"\(args[0])\", \(success), \(today),\(streak),\(commits))")
+        _ = self?.webView?.stringByEvaluatingJavaScript(from: "contributions(\"\(args[0])\", \(success), \(today),\(streak),\(commits))")
       }
     }
     
-    self.calls["set"] = { (args) in
+    calls["set"] = { (args) in
       let userDefaults = UserDefaults.standard
       userDefaults.setValue(args[1], forKey: args[0])
       userDefaults.synchronize()
@@ -40,7 +39,7 @@ class ContentViewController: NSViewController, XMLParserDelegate, WebPolicyDeleg
       
     }
     
-    self.calls["get"] = { [weak self] (args) in
+    calls["get"] = { [weak self] (args) in
       var value = UserDefaults.standard.value(forKey: args[0]) as? String
       
       if value == nil {
@@ -53,7 +52,7 @@ class ContentViewController: NSViewController, XMLParserDelegate, WebPolicyDeleg
       _ = self?.webView?.stringByEvaluatingJavaScript(from: "get('\(key)', '\(v)', \(args[1]))");
     }
     
-    self.calls["remove"] = { (args) in
+    calls["remove"] = { (args) in
       let userDefaults = UserDefaults.standard
       userDefaults.removeObject(forKey: args[0])
       userDefaults.synchronize()
@@ -63,12 +62,12 @@ class ContentViewController: NSViewController, XMLParserDelegate, WebPolicyDeleg
       }
     }
     
-    self.calls["check_login"] = { [weak self] (args) in
+    calls["check_login"] = { [weak self] (args) in
       let active = Bundle.main.isLoginItem()
       _ = self?.webView?.stringByEvaluatingJavaScript(from: "raw('check_login', \(active))")
     }
     
-    self.calls["toggle_login"] = { (args) in
+    calls["toggle_login"] = { (args) in
       if Bundle.main.isLoginItem() {
         Bundle.main.removeFromLoginItems()
       } else {
@@ -76,15 +75,15 @@ class ContentViewController: NSViewController, XMLParserDelegate, WebPolicyDeleg
       }
     }
     
-    self.calls["quit"] = { (args) in
+    calls["quit"] = { (args) in
       NSApplication.shared.terminate(self)
     }
     
-    self.calls["update"] = { (args) in
+    calls["update"] = { (args) in
       GithubUpdate.check(true)
     }
 
-    self.calls["open_url"] = { (args) in
+    calls["open_url"] = { (args) in
       if let checkURL = URL(string: args[0]) {
         NSWorkspace.shared.open(checkURL)
       }
@@ -92,17 +91,15 @@ class ContentViewController: NSViewController, XMLParserDelegate, WebPolicyDeleg
   }
 
   required init?(coder: NSCoder) {
-    self.calls = [:]
     super.init(coder: coder)
-    self.loadCalls()
+    loadCalls()
   }
-  
+
   override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-    self.calls = [:]
     super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-    self.loadCalls()
+    loadCalls()
   }
-  
+
   override func viewDidLoad() {
 #if DEBUG
     let url = URL(string: "http://0.0.0.0:8080")!
@@ -111,27 +108,32 @@ class ContentViewController: NSViewController, XMLParserDelegate, WebPolicyDeleg
     let url = URL(fileURLWithPath: indexPath!)
 #endif
     let request = URLRequest(url: url)
-    
-    self.webView?.policyDelegate = self
-    self.webView?.drawsBackground = false
-    self.webView?.wantsLayer = true
-    self.webView?.layer?.cornerRadius = 5
-    self.webView?.layer?.masksToBounds = true
-    
-    self.webView?.mainFrame.load(request)
-    
+
+    webView.policyDelegate = self
+    webView.resourceLoadDelegate = self
+    webView.drawsBackground = false
+    webView.wantsLayer = true
+    if let layer = webView.layer {
+      layer.cornerRadius = 5
+      layer.masksToBounds = true
+    }
+
+    webView.mainFrame.load(request)
+
     super.viewDidLoad()
   }
-  
+
   @IBAction func refresh(_ sender: AnyObject?) {
-    self.webView?.reload(sender)
+    webView.reload(sender)
   }
-  
+}
+
+extension ContentViewController: WebPolicyDelegate {
   func webView(_ webView: WebView!, decidePolicyForNavigationAction actionInformation: [AnyHashable: Any]!, request: URLRequest!, frame: WebFrame!, decisionListener listener: WebPolicyDecisionListener!) {
     let url:String = request.url!.absoluteString.removingPercentEncoding!
 
     if url.hasPrefix("osx:") {
-      let matches = self.regex?.matches(in: url, options: [], range: NSMakeRange(0, url.count))
+      let matches = regex?.matches(in: url, options: [], range: NSMakeRange(0, url.count))
       if let match = matches?[0] {
         let fn = (url as NSString).substring(with: match.range(at: 1))
         let args = (url as NSString).substring(with: match.range(at: 2)).components(separatedBy: "%%")
@@ -140,7 +142,7 @@ class ContentViewController: NSViewController, XMLParserDelegate, WebPolicyDeleg
           print(fn, args)
         #endif
         
-        let closure = self.calls[fn]
+        let closure = calls[fn]
         closure?(args)
       }
     } else if (url.hasPrefix("log:")) {
@@ -152,3 +154,17 @@ class ContentViewController: NSViewController, XMLParserDelegate, WebPolicyDeleg
     }
   }
 }
+
+extension ContentViewController: WebResourceLoadDelegate {
+  func webView(_ sender: WebView!, resource identifier: Any!, didFinishLoadingFrom dataSource: WebDataSource!) {
+    debugPrint("didFinishLoadingFrom: \(String(describing: dataSource.response.url))")
+  }
+
+  func webView(_ sender: WebView!, resource identifier: Any!, didFailLoadingWithError error: Error!, from dataSource: WebDataSource!) {
+    debugPrint("didFailLoadingWithError: \(String(describing: error)), \(String(describing: dataSource.response.url))")
+  }
+}
+
+/*
+ 1100 means NSURLErrorFileDoesNotExist
+ */
