@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
+<document type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" customObjectInstantitationMethod="direct">
     <dependencies>
         <deployment identifier="macosx"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14460.31"/>
-        <plugIn identifier="com.apple.WebKitIBPlugin" version="14460.31"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
+        <plugIn identifier="com.apple.WebKitIBPlugin" version="14490.70"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <customObject id="-2" userLabel="File's Owner" customClass="ContentViewController" customModule="GithubPulse" customModuleProvider="target">
+        <customObject id="-2" userLabel="File's Owner" customClass="ContentViewController" customModule="GithubPulse">
             <connections>
                 <outlet property="view" destination="TWJ-rl-ej2" id="ijC-Zd-4D2"/>
                 <outlet property="webView" destination="AJl-zo-hY7" id="8Ny-Ap-WoS"/>
@@ -25,6 +25,10 @@
                     <webPreferences key="preferences" defaultFontSize="12" defaultFixedFontSize="12" javaEnabled="NO">
                         <nil key="identifier"/>
                     </webPreferences>
+                    <connections>
+                        <outlet property="policyDelegate" destination="-2" id="cGB-Qv-taX"/>
+                        <outlet property="resourceLoadDelegate" destination="-2" id="PCJ-8X-wON"/>
+                    </connections>
                 </webView>
             </subviews>
             <point key="canvasLocation" x="123" y="57"/>
