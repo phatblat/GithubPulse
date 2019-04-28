@@ -1,9 +1,12 @@
+const path = require('path');
+
 var utils = {
   osx: '../javascript/utils.js',
   chrome: '../chrome_extension/js/utils.js'
 };
 
 module.exports = {
+  mode: 'none',
   entry: [utils[process.env.TARGET || 'osx'], '../javascript/main.jsx'],
   devtool: 'source-map',
   output: {
@@ -12,14 +15,20 @@ module.exports = {
     filename: 'bundle.js'
   },
   module: {
-    loaders: [
-      {test: /\.jsx$/, loader: 'babel-loader'},
+    rules: [
+      { test: /\.jsx$/,
+        exclude: /node_modules/,
+        loader: 'babel-loader',
+        options: {
+          presets: [ 'es2015', 'react' ]
+        }
+      },
       {test: /\.styl$/, loader: 'style-loader!css-loader!stylus-loader'},
       {test: /\.json$/, loader: 'json-loader'},
       {test: /\.ttf$/, loader: 'file-loader' }
     ]
   },
   resolve: {
-    extensions: ['', '.js', '.jsx', '.styl' ]
+    extensions: ['.js', '.jsx', '.styl']
   }
 };
