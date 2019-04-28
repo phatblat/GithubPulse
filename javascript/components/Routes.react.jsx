@@ -1,23 +1,21 @@
-var React = require('react');
-var Router = require('react-router');
-var ReactDOM = require('react-dom');
+// React types
+import { React } from 'react';
+import { Router, Route } from 'react-router';
+import { render } from 'react-dom';
 
-var GithubPulse = require('./GithubPulse.react');
-var Login = require('./Login.react');
-var Profile = require('./Profile.react');
-var Following = require('./Following.react');
+// Custom components
+import { GithubPulse } from './GithubPulse.react';
+import { Login } from './Login.react';
+import { Profile } from './Profile.react';
+import { Following } from './Following.react';
 
-var Route = Router.Route;
-var IndexRoute = Router.IndexRoute;
-
-var routes = (
+render(
   <Router.Router>
     <Route component={GithubPulse}>
       <Route path="/" component={Login} />
       <Route path="/:username" component={Profile} />
       <Route path="/compare/following/:username" component={Following} />
     </Route>
-  </Router.Router>
+  </Router.Router>,
+  document.getElementById('github-pulse')
 );
-
-ReactDOM.render(routes, document.getElementById('github-pulse'));
