@@ -162,7 +162,19 @@ class AppDelegate: NSObject, NSApplicationDelegate {
       popover.closePopover(nil)
     } else {
       let controller = popover.contentViewController as! ContentViewController
-      _ = controller.webView?.stringByEvaluatingJavaScript(from: "update(false)")
+
+      guard let webView = controller.webView else { return }
+
+      let js = "update(false)"
+
+      webView.evaluateJavaScript(js) { (result: Any?, error: Error?) in
+        if let error = error {
+          debugPrint("JS error: \(error)")
+        }
+        if let result = result {
+          debugPrint("JS result: \(result)")
+        }
+      }
       
       popover.presentPopover(from: statusItem.view!.bounds, in: statusItem.view!, preferredArrowDirection: INPopoverArrowDirection.up, anchorsToPositionView: true)
       NSApp.activate(ignoringOtherApps: true)

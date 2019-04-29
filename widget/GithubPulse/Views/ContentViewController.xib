@@ -3,6 +3,7 @@
     <dependencies>
         <deployment identifier="macosx"/>
         <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="14490.70"/>
+        <plugIn identifier="com.apple.WebKit2IBPlugin" version="14490.70"/>
         <plugIn identifier="com.apple.WebKitIBPlugin" version="14490.70"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -19,17 +20,14 @@
             <rect key="frame" x="0.0" y="0.0" width="402" height="386"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
             <subviews>
-                <webView fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="AJl-zo-hY7">
+                <wkWebView wantsLayer="YES" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="AJl-zo-hY7">
                     <rect key="frame" x="1" y="1" width="400" height="384"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
-                    <webPreferences key="preferences" defaultFontSize="12" defaultFixedFontSize="12" javaEnabled="NO">
-                        <nil key="identifier"/>
-                    </webPreferences>
-                    <connections>
-                        <outlet property="policyDelegate" destination="-2" id="cGB-Qv-taX"/>
-                        <outlet property="resourceLoadDelegate" destination="-2" id="PCJ-8X-wON"/>
-                    </connections>
-                </webView>
+                    <wkWebViewConfiguration key="configuration">
+                        <audiovisualMediaTypes key="mediaTypesRequiringUserActionForPlayback" none="YES"/>
+                        <wkPreferences key="preferences"/>
+                    </wkWebViewConfiguration>
+                </wkWebView>
             </subviews>
             <point key="canvasLocation" x="123" y="57"/>
         </customView>

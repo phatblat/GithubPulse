@@ -10,7 +10,7 @@ import Cocoa
 import WebKit
 
 class ContentViewController: NSViewController, XMLParserDelegate {
-  @IBOutlet var webView: WebView!
+  @IBOutlet var webView: WKWebView!
   @IBOutlet var lastUpdate: NSTextField!
   
   var regex = try? NSRegularExpression(pattern: "^osx:(\\w+)\\((.*)\\)$", options: NSRegularExpression.Options.caseInsensitive)
@@ -24,7 +24,19 @@ class ContentViewController: NSViewController, XMLParserDelegate {
             NotificationCenter.default.post(name: Notification.Name(rawValue: "check_icon"), object: nil, userInfo: ["today": today])
           }
         }
-        _ = self?.webView?.stringByEvaluatingJavaScript(from: "contributions(\"\(args[0])\", \(success), \(today),\(streak),\(commits))")
+
+        guard let webView = self?.webView else { return }
+
+        let js = "contributions(\"\(args[0])\", \(success), \(today), \(streak), \(commits))"
+
+        webView.evaluateJavaScript(js) { (result: Any?, error: Error?) in
+          if let error = error {
+            debugPrint("JS error: \(error)")
+          }
+          if let result = result {
+            debugPrint("JS result: \(result)")
+          }
+        }
       }
     }
     
@@ -48,8 +60,19 @@ class ContentViewController: NSViewController, XMLParserDelegate {
       
       let key = args[0].replacingOccurrences(of: "'", with: "\\'", options: [], range: nil)
       let v = value!.replacingOccurrences(of: "'", with: "\\'", options: [], range: nil)
-      
-      _ = self?.webView?.stringByEvaluatingJavaScript(from: "get('\(key)', '\(v)', \(args[1]))");
+
+      guard let webView = self?.webView else { return }
+
+      let js = "get('\(key)', '\(v)', \(args[1]))"
+
+      webView.evaluateJavaScript(js) { (result: Any?, error: Error?) in
+        if let error = error {
+          debugPrint("JS error: \(error)")
+        }
+        if let result = result {
+          debugPrint("JS result: \(result)")
+        }
+      }
     }
     
     calls["remove"] = { (args) in
@@ -64,7 +87,19 @@ class ContentViewController: NSViewController, XMLParserDelegate {
     
     calls["check_login"] = { [weak self] (args) in
       let active = Bundle.main.isLoginItem()
-      _ = self?.webView?.stringByEvaluatingJavaScript(from: "raw('check_login', \(active))")
+
+      guard let webView = self?.webView else { return }
+
+      let js = "raw('check_login', \(active))"
+
+      webView.evaluateJavaScript(js) { (result: Any?, error: Error?) in
+        if let error = error {
+          debugPrint("JS error: \(error)")
+        }
+        if let result = result {
+          debugPrint("JS result: \(result)")
+        }
+      }
     }
     
     calls["toggle_login"] = { (args) in
@@ -109,16 +144,13 @@ class ContentViewController: NSViewController, XMLParserDelegate {
 #endif
     let request = URLRequest(url: url)
 
-    webView.policyDelegate = self
-    webView.resourceLoadDelegate = self
-    webView.drawsBackground = false
     webView.wantsLayer = true
     if let layer = webView.layer {
       layer.cornerRadius = 5
       layer.masksToBounds = true
     }
 
-    webView.mainFrame.load(request)
+    webView.load(request)
 
     super.viewDidLoad()
   }
@@ -155,16 +187,17 @@ extension ContentViewController: WebPolicyDelegate {
   }
 }
 
-extension ContentViewController: WebResourceLoadDelegate {
-  func webView(_ sender: WebView!, resource identifier: Any!, didFinishLoadingFrom dataSource: WebDataSource!) {
-    debugPrint("didFinishLoadingFrom: \(String(describing: dataSource.response.url))")
+extension ContentViewController: WKNavigationDelegate {
+  func webView(_: WKWebView, didFail: WKNavigation!, withError error: Error) {
+    debugPrint("webview:didFail:withError: \(error)")
   }
-
-  func webView(_ sender: WebView!, resource identifier: Any!, didFailLoadingWithError error: Error!, from dataSource: WebDataSource!) {
-    debugPrint("didFailLoadingWithError: \(String(describing: error)), \(String(describing: dataSource.response?.url))")
+  func webView(_: WKWebView, didFinish: WKNavigation!) {
+    debugPrint("webview:didFinish:")
   }
 }
 
-/*
- 1100 means NSURLErrorFileDoesNotExist
- */
+extension ContentViewController: WKUIDelegate {
+  func webViewDidClose(_: WKWebView) {
+    debugPrint("webViewDidClose")
+  }
+}
