@@ -14,14 +14,15 @@ var userSort = function (a, b) {
 };
 
 export default class Following extends React.Component {
-  mixins = [ Router.Navigation ]
-
-  getInitialState() {
-    return {
+  constructor(props) {
+    super(props);
+    this.state = {
       maxStreak: 0,
       following: false
     };
   }
+
+  mixins = [ Router.Navigation ]
 
   render() {
     var usersLines = (<div></div>);

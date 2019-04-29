@@ -10,8 +10,9 @@ import pkg from '../../package.json';
 import '../styles/Profile';
 
 export default class Profile extends React.Component {
-  getInitialState() {
-    return {
+  constructor(props) {
+    super(props);
+    this.state = {
       avatar_url: 'https://secure.gravatar.com/avatar?size=100',
       login: '',
       name: '',

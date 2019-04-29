@@ -4,8 +4,9 @@ import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 import '../styles/Config';
 
 export default class Config extends React.Component {
-  getInitialState() {
-    return {
+  constructor(props) {
+    super(props);
+    this.state = {
       open: false,
       active: false,
       notify: false

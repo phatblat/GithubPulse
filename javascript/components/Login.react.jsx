@@ -6,8 +6,9 @@ import Config from './Config.react';
 import '../styles/Login';
 
 export default class Login extends React.Component {
-  getInitialState() {
-    return {
+  constructor(props) {
+    super(props);
+    this.state = {
       username: '',
       zen: ''
     };
