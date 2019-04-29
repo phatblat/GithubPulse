@@ -5,18 +5,17 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import ReactDOM from 'react-dom';
 
 // Custom components
-import GithubPulse from './GithubPulse.react';
 import Login from './Login.react';
 import Profile from './Profile.react';
 import Following from './Following.react';
 
-ReactDOM.render(
+ReactDOM.render((
   <Router>
-    <Route component={GithubPulse}>
+    <div className="github-pulse">
       <Route path="/" component={Login} />
       <Route path="/:username" component={Profile} />
       <Route path="/compare/following/:username" component={Following} />
-    </Route>
-  </Router>,
+    </div>
+  </Router>),
   document.getElementById('github-pulse')
 );
