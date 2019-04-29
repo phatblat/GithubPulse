@@ -58,8 +58,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     if let window = NSApplication.shared.mainWindow {
       window.contentViewController = contentViewController
       //window.showWindow(self)
-    } else {
-      print("ERROR: Unable to get a reference to the main window!")
     }
   }
 
