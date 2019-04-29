@@ -27,7 +27,8 @@ class Contributions {
     let request = NSMutableURLRequest(url: url!, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 30)
     request.httpShouldHandleCookies = false
 
-    URLSession.shared.dataTask(with: request as URLRequest) { data, _, error in
+    let session = URLSession(configuration: .default, delegate: nil, delegateQueue: .main)
+    session.dataTask(with: request as URLRequest) { data, _, error in
       if error != nil || data == nil {
         self.invokeCallback(false)
         return

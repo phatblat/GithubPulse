@@ -9,10 +9,11 @@
 import Foundation
 
 class GithubUpdate {
-  var bundleVersion:String?
-  var repoName:String?
-  var githubVersion:String?
-  var install:Bool = false
+  let session = URLSession(configuration: .default, delegate: nil, delegateQueue: .main)
+  var bundleVersion: String?
+  var repoName: String?
+  var githubVersion: String?
+  var install = false
   
   class func check() {
     GithubUpdate().check()
@@ -43,7 +44,7 @@ class GithubUpdate {
     let url = URL(string: "https://api.github.com/repos/\(self.repoName!)/tags")
     let request = URLRequest(url: url!)
 
-    URLSession.shared.dataTask(with: request as URLRequest) { data, _, error in
+    session.dataTask(with: request as URLRequest) { data, _, error in
       guard error == nil, let data = data else { return }
       
       if let tags = (try? JSONSerialization.jsonObject(with: data, options: [])) as? [[String: AnyObject]] {
@@ -65,7 +66,7 @@ class GithubUpdate {
     }.resume()
   }
   
-  func download(_ tag:String) {
+  func download(_ tag: String) {
     let fileManager = FileManager.default
     let url = URL(string: "https://github.com/tadeuzagallo/GithubPulse/raw/\(tag)/dist/GithubPulse.zip")
     let request = URLRequest(url: url!)
@@ -82,9 +83,16 @@ class GithubUpdate {
     if !fileManager.fileExists(atPath: path) {
       print("Downloading \(tag)...")
 
-      URLSession.shared.dataTask(with: request as URLRequest) { data, _, error in
+      session.dataTask(with: request as URLRequest) { data, _, error in
+        guard error == nil, let data = data else { return }
         print("Download complete!")
-        ((try? data?.write(to: URL(fileURLWithPath: path), options: [.atomic])) as ()??)
+
+        do {
+          try data.write(to: URL(fileURLWithPath: path), options: [.atomic])
+        } catch {
+          print("Error writing to path \(path), \(error)")
+        }
+
         if self.install {
           self.extract(folder, tag: tag, path: path)
         }
