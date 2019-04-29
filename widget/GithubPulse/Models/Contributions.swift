@@ -26,15 +26,15 @@ class Contributions {
     let url = URL(string: URLString)
     let request = NSMutableURLRequest(url: url!, cachePolicy: NSURLRequest.CachePolicy.reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 30)
     request.httpShouldHandleCookies = false
-    
-    NSURLConnection.sendAsynchronousRequest(request as URLRequest, queue: OperationQueue.main) { (response, data, error) in
+
+    URLSession.shared.dataTask(with: request as URLRequest) { data, _, error in
       if error != nil || data == nil {
         self.invokeCallback(false)
         return
       }
 
-      completionBlock(String(data: data!, encoding: String.Encoding.utf8)!)
-    }
+      completionBlock(String(data: data!, encoding: .utf8)!)
+    }.resume()
   }
 
   func fetch(_ username: String, completionBlock: @escaping FetchCallback) {

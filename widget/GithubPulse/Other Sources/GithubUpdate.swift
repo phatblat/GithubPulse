@@ -42,11 +42,9 @@ class GithubUpdate {
     
     let url = URL(string: "https://api.github.com/repos/\(self.repoName!)/tags")
     let request = URLRequest(url: url!)
-    
-    NSURLConnection.sendAsynchronousRequest(request, queue: OperationQueue.main) { (response, data, error) in
-      guard error == nil, let data = data else {
-        return
-      }
+
+    URLSession.shared.dataTask(with: request as URLRequest) { data, _, error in
+      guard error == nil, let data = data else { return }
       
       if let tags = (try? JSONSerialization.jsonObject(with: data, options: [])) as? [[String: AnyObject]] {
         
@@ -64,8 +62,7 @@ class GithubUpdate {
           }
         }
       }
-     
-    }
+    }.resume()
   }
   
   func download(_ tag:String) {
@@ -84,13 +81,14 @@ class GithubUpdate {
     
     if !fileManager.fileExists(atPath: path) {
       print("Downloading \(tag)...")
-      NSURLConnection.sendAsynchronousRequest(request, queue: OperationQueue.main) { (_, data, _) in
+
+      URLSession.shared.dataTask(with: request as URLRequest) { data, _, error in
         print("Download complete!")
         ((try? data?.write(to: URL(fileURLWithPath: path), options: [.atomic])) as ()??)
         if self.install {
           self.extract(folder, tag: tag, path: path)
         }
-      }
+      }.resume()
     } else {
       print("Version \(tag) is already on the cache!")
       if self.install {
