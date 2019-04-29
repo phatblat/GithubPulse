@@ -66,7 +66,7 @@ There actually is a target on the root `Makefile` called `chrome` but it won't w
 But you can still build the front end and load the unpacked extensions. Here is how:
 
 * Run `$ cd front && make chrome` ( or `make chrome.watch` if you want to watch for changes)
-* Then go to `chrome:extension`
+* Then go to `chrome://extensions`
 * click on `Load unpacked extension...` (make sure `Developer mode` is checked on the top right of the page)
 * Select `GithubPulse/chrome_extension`
 * Done!
