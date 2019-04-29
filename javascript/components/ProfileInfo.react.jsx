@@ -1,13 +1,15 @@
-var React = require('react');
+import React from 'react';
+// import PropTypes from 'prop-types';
 
 require('../styles/ProfileInfo');
 
-var ProfileInfo = React.createClass({
-  propTypes: {
+class ProfileInfo extends React.Component {
+  propTypes = {
     picture: React.PropTypes.string.isRequired,
     name: React.PropTypes.string,
     username: React.PropTypes.string.isRequired
-  },
+  }
+
   render() {
     return (
       <div className="profile-info">
@@ -34,18 +36,21 @@ var ProfileInfo = React.createClass({
         </div>
       </div>
     );
-  },
+  }
+
   _logout() {
     console.log(this.props);
     Utils.clear('username');
     this.props.history.pushState(null, '/');
-  },
+  }
+
   _gotoUsername() {
     Utils.openURL('https://github.com/' + this.props.username);
-  },
+  }
+
   _showFollowing() {
     this.props.history.pushState(null, `/compare/following/${this.props.username}`);
-  },
-});
+  }
+}
 
-module.exports = ProfileInfo;
+export default ProfileInfo

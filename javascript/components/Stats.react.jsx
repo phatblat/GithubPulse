@@ -1,16 +1,17 @@
-var React = require('react');
+import React from 'react';
 
 require('../styles/Stats');
 
 var p = (l, n) => n === 1 ? l : l + 's';
 
-var Stats = React.createClass({
-  propTypes: {
+class Stats extends React.Component {
+  propTypes = {
     repos: React.PropTypes.number.isRequired,
     followers: React.PropTypes.number.isRequired,
     streak: React.PropTypes.number.isRequired,
     today: React.PropTypes.number.isRequired
-  },
+  }
+
   render() {
     return (
       <div className="stats">
@@ -36,6 +37,6 @@ var Stats = React.createClass({
       </div>
     );
   }
-});
+}
 
-module.exports = Stats;
+export default Stats;

@@ -1,15 +1,15 @@
 // React types
-import { React } from 'react';
-import { Router, Route } from 'react-router';
-import { render } from 'react-dom';
+import React from 'react';
+import { Router, Route } from "react-router";
+import ReactDOM from 'react-dom';
 
 // Custom components
-import { GithubPulse } from './GithubPulse.react';
-import { Login } from './Login.react';
-import { Profile } from './Profile.react';
-import { Following } from './Following.react';
+import GithubPulse from './GithubPulse.react';
+import Login from './Login.react';
+import Profile from './Profile.react';
+import Following from './Following.react';
 
-render(
+ReactDOM.render(
   <Router.Router>
     <Route component={GithubPulse}>
       <Route path="/" component={Login} />

@@ -1,15 +1,15 @@
-var React = require('react');
-var GithubApi = require('../github-api');
+import React from 'react';
+import GithubApi from '../github-api';
 
-var ProfileInfo = require('./ProfileInfo.react');
-var ActivityGraph = require('./ActivityGraph.react');
-var Stats = require('./Stats.react');
-var Config = require('./Config.react');
-var pkg = require('../../package.json');
+import ProfileInfo from './ProfileInfo.react';
+import ActivityGraph from './ActivityGraph.react';
+import Stats from './Stats.react';
+import Config from './Config.react';
+import pkg from '../../package.json';
 
-require('../styles/Profile');
+import '../styles/Profile';
 
-var Profile = React.createClass({
+export default class Profile extends React.Component {
   getInitialState() {
     return {
       avatar_url: 'https://secure.gravatar.com/avatar?size=100',
@@ -25,7 +25,8 @@ var Profile = React.createClass({
       _fetchingUserContributions: true,
       updateAvailable: false
     };
-  },
+  }
+
   render() {
     var className = this.state._fetchUserInfo || this.state._fetchingUserContributions ? 'rotate' : '';
 
@@ -64,14 +65,17 @@ var Profile = React.createClass({
         </div>
       </div>
     );
-  },
+  }
+
   componentDidMount() {
     window.update = this._update;
     this._update(false);
-  },
+  }
+
   componentWillUnmount() {
     window.update = null;
-  },
+  }
+
   _update(force) {
     this.setState({
       _fetchingUserInfo: true,
@@ -81,7 +85,8 @@ var Profile = React.createClass({
     this._fetchUserInfo(force);
     this._fetchUserContributions(force);
     this._checkForUpdates();
-  },
+  }
+
   _fetchUserInfo(force) {
     var username = this.props.params.username;
 
@@ -105,7 +110,8 @@ var Profile = React.createClass({
     } else {
       Utils.fetch(['user_info', username], 15*60*1000, callback);
     }
-  },
+  }
+
   _fetchUserContributions(force) {
     var username = this.props.params.username;
 
@@ -147,17 +153,17 @@ var Profile = React.createClass({
     } else {
       Utils.fetch(['user_contributions', username], 15*60*1000, callback);
     }
-  },
+  }
+
   _checkForUpdates() {
     Utils.fetch('update_available', function (updateAvailable) {
       this.setState({
         updateAvailable: updateAvailable
       });
     }.bind(this));
-  },
+  }
+
   _updateVersion() {
     Utils.raw('update()');
   }
-});
-
-module.exports = Profile;
+}

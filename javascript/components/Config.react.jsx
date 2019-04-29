@@ -1,16 +1,17 @@
-var React = require('react');
-var CSSTransitionGroup = require('react-addons-css-transition-group');
+import React from 'react';
+import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 
 require('../styles/Config');
 
-var Config = React.createClass({
+class Config extends React.Component {
   getInitialState() {
     return {
       open: false,
       active: false,
       notify: false
     };
-  },
+  }
+
   render() {
     var panel = '';
     var overlay = '';
@@ -60,7 +61,8 @@ var Config = React.createClass({
         </CSSTransitionGroup>
       </div>
     );
-  },
+  }
+
   componentDidMount() {
     Utils.raw('check_login()', (active) => {
       this.setState({ active: active });
@@ -69,22 +71,26 @@ var Config = React.createClass({
     Utils.fetch('dont_notify', (dontNotify) => {
       this.setState({ notify: !dontNotify });
     });
-  },
+  }
+
   _toggleActive() {
     this.setState({ active: !this.state.active });
     Utils.raw('toggle_login()');
-  },
+  }
+
   _toggleNotifications() {
     var notify = !this.state.notify;
     this.setState({ notify: notify });
     Utils.save('dont_notify', !notify);
-  },
+  }
+
   _togglePanel() {
     this.setState({ open: !this.state.open });
-  },
+  }
+
   _quit() {
     Utils.quit();
   }
-});
+}
 
-module.exports = Config;
+export default Config;

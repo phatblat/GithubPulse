@@ -1,10 +1,10 @@
-var React = require('react');
+import React from 'react';
 
-var cx = require('classnames');
+import cx from 'classnames';
 
 require('../styles/UserLine');
 
-var UserLine = React.createClass({
+class UserLine extends React.Component {
   render() {
     var hasToday = this.props.user.today > 0;
     var hasStreak = this.props.user.streak > 0;
@@ -31,10 +31,11 @@ var UserLine = React.createClass({
         <img className="user-line__picture" src={ this.props.user.avatar_url + '&size=36' }/>
       </div>
     );
-  },
+  }
+
   _profile() {
     Utils.openURL('https://github.com/' + this.props.user.login);
   }
-});
+}
 
-module.exports = UserLine;
+export default UserLine;

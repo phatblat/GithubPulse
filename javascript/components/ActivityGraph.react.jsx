@@ -1,20 +1,21 @@
-var React = require('react');
-var Chart = require('chart.js');
-
+import React from 'react';
+import Chart from 'chart.js';
 
 require('../styles/ActivityGraph');
 
-var ActivityGraph = React.createClass({
-  propTypes: {
+class ActivityGraph extends React.Component {
+  propTypes = {
     commits: React.PropTypes.arrayOf(React.PropTypes.number).isRequired
-  },
+  }
+
   render() {
     return (
       <div className="activity-graph">
         <canvas key="activity-graph" className="activity-graph__canvas" width="390" height="145" ref="canvas" />
       </div>
     );
-  },
+  }
+
   shouldComponentUpdate(nextProps) {
     var pc = this.props.commits || [];
     var nc = nextProps.commits || [];
@@ -30,7 +31,8 @@ var ActivityGraph = React.createClass({
     }
 
     return false;
-  },
+  }
+
   componentDidUpdate() {
     if (this.chart) {
       this.chart.destroy();
@@ -69,6 +71,6 @@ var ActivityGraph = React.createClass({
       tooltipXPadding: 10,
     });
   }
-});
+}
 
-module.exports = ActivityGraph;
+export default ActivityGraph;

@@ -1,8 +1,8 @@
-var React = require('react');
+import React from 'react';
 
-require('../styles/GithubPulse');
+import '../styles/GithubPulse';
 
-var GithubPulse = React.createClass({
+export default class GithubPulse extends React.Component {
   render() {
     return (
       <div className="github-pulse">
@@ -10,6 +10,4 @@ var GithubPulse = React.createClass({
       </div>
     );
   }
-});
-
-module.exports = GithubPulse;
+}

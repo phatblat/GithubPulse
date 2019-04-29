@@ -1,18 +1,18 @@
-var React = require('react');
-var assign = require('object-assign');
+import React from 'react';
 
-var GithubApi = require('../github-api');
-var Config = require('./Config.react');
+import GithubApi from '../github-api';
+import Config from './Config.react';
 
-require('../styles/Login');
+import '../styles/Login';
 
-var Login =  React.createClass({
+export default class Login extends React.Component {
   getInitialState() {
     return {
       username: '',
       zen: ''
     };
-  },
+  }
+
   render() {
     return (
       <div>
@@ -34,15 +34,18 @@ var Login =  React.createClass({
         </div>
       </div>
     );
-  },
+  }
+
   componentDidMount() {
     this._mounted = true;
     this._fetchZen();
     this._fetchUserName();
-  },
+  }
+
   componentWillUnmount() {
     this._mounted = false;
-  },
+  }
+
   _fetchZen() {
     Utils.fetch('zen', 60 * 60 * 1000, (zen) => {
       if (zen) {
@@ -54,17 +57,20 @@ var Login =  React.createClass({
         });
       }
     });
-  },
+  }
+
   _fetchUserName() {
     Utils.fetch('username', (username) => {
       if (username) {
         this.props.history.pushState(null, `/${username}`);
       }
     });
-  },
+  }
+
   _onChange(event) {
     this.setState({ username: event.target.value.trim() });
-  },
+  }
+
   _onKeyDown(event) {
     if (event.keyCode === 13) {
       let username = this.state.username;
@@ -72,6 +78,4 @@ var Login =  React.createClass({
       this.props.history.pushState(null, `/${username}`);
     }
   }
-});
-
-module.exports = Login;
+}

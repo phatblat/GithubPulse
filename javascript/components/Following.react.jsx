@@ -1,11 +1,11 @@
-var React = require('react');
-var Router = require('react-router');
-var GithubApi = require('../github-api');
+import React from 'react';
+import { Router } from "react-router";
+import GithubApi from '../github-api';
 
-var Config = require('./Config.react');
-var UserLine = require('./UserLine.react');
+import Config from './Config.react';
+import UserLine from './UserLine.react';
 
-require('../styles/Following');
+import '../styles/Following';
 
 var SORT_FREQ = 60;
 
@@ -13,14 +13,16 @@ var userSort = function (a, b) {
   return (b.streak - a.streak) || (b.today - a.today) || (a.login.localeCompare(b.login));
 };
 
-var Following = React.createClass({
-  mixins: [ Router.Navigation ],
+export default class Following extends React.Component {
+  mixins = [ Router.Navigation ]
+
   getInitialState() {
     return {
       maxStreak: 0,
       following: false
     };
-  },
+  }
+
   render() {
     var usersLines = (<div></div>);
     var progressBar = '';
@@ -57,14 +59,17 @@ var Following = React.createClass({
         { progressBar }
       </div>
     );
-  },
+  }
+
   componentDidMount() {
     window.update = function () {};
     this._fetchUserFollowing(false);
-  },
+  }
+
   componentWillUnmount() {
     window.update = null;
-  },
+  }
+
   _fetchUserFollowing(force) {
     var _this = this;
     var username = this.props.params.username;
@@ -93,7 +98,8 @@ var Following = React.createClass({
         getPage(1);
       }
     });
-  },
+  }
+
   _fetchContributions() {
     var _this = this;
     var updated = 0;
@@ -124,10 +130,9 @@ var Following = React.createClass({
         }
       }, true);
     });
-  },
+  }
+
   _profile() {
     this.props.history.pushState(null, `/${this.props.params.username}`);
   }
-});
-
-module.exports = Following;
+}
