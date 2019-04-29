@@ -102,7 +102,7 @@ class ContentViewController: NSViewController, XMLParserDelegate {
 
   override func viewDidLoad() {
 #if DEBUG
-    let url = URL(string: "http://0.0.0.0:8080")!
+    let url = URL(string: "http://localhost:8080")!
 #else
     let indexPath = Bundle.main.path(forResource: "index", ofType: "html", inDirectory: "front")
     let url = URL(fileURLWithPath: indexPath!)
