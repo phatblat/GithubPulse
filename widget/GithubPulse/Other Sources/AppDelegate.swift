@@ -7,6 +7,7 @@
 //
 
 import Cocoa
+import WebKit
 
 private var myContext = 0
 
@@ -166,8 +167,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
       let js = "update(false)"
 
       webView.evaluateJavaScript(js) { (result: Any?, error: Error?) in
-        if let error = error {
-          debugPrint("JS error: \(error)")
+        if let error = error as NSError? {
+//          "JS error: Error Domain=WKErrorDomain Code=4 \"A JavaScript exception occurred\" UserInfo={WKJavaScriptExceptionLineNumber=0, WKJavaScriptExceptionMessage=TypeError: undefined is not a function, WKJavaScriptExceptionColumnNumber=0, NSLocalizedDescription=A JavaScript exception occurred}"
+          if error.domain == WKErrorDomain, error.code == WKError.javaScriptExceptionOccurred.rawValue {
+            debugPrint(error.localizedDescription)
+            let lineNumber = error.userInfo["WKJavaScriptExceptionLineNumber"] ?? 0
+            let columnNumber = error.userInfo["WKJavaScriptExceptionColumnNumber"] ?? 0
+            let jsException = error.userInfo["WKJavaScriptExceptionMessage"] ?? ""
+            debugPrint("JS [\(lineNumber):\(columnNumber)] \(jsException)")
+          } else {
+            debugPrint("JS error: \(error)")
+          }
         }
         if let result = result {
           debugPrint("JS result: \(result)")
