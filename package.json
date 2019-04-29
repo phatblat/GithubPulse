@@ -33,6 +33,7 @@
     "react-addons-css-transition-group": "^15.6.2",
     "react-dom": "^16.8.6",
     "react-router": "^5.0.0",
+    "react-router-dom": "^5.0.0",
     "style-loader": "^0.23.1",
     "stylus": "^0.54.5",
     "stylus-loader": "^3.0.2",
@@ -42,7 +43,9 @@
     "yabs": "^0.0.3"
   },
   "babel": {
-    "plugins": ["@babel/plugin-proposal-class-properties"],
+    "plugins": [
+      "@babel/plugin-proposal-class-properties"
+    ],
     "presets": [
       "@babel/preset-env",
       "@babel/preset-react"
