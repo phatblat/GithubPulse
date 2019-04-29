@@ -1,9 +1,9 @@
 import React from 'react';
 import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 
-require('../styles/Config');
+import '../styles/Config';
 
-class Config extends React.Component {
+export default class Config extends React.Component {
   getInitialState() {
     return {
       open: false,
@@ -92,5 +92,3 @@ class Config extends React.Component {
     Utils.quit();
   }
 }
-
-export default Config;

@@ -1,15 +1,9 @@
 import React from 'react';
-// import PropTypes from 'prop-types';
+import PropTypes from 'prop-types';
 
-require('../styles/ProfileInfo');
+import '../styles/ProfileInfo';
 
-class ProfileInfo extends React.Component {
-  propTypes = {
-    picture: React.PropTypes.string.isRequired,
-    name: React.PropTypes.string,
-    username: React.PropTypes.string.isRequired
-  }
-
+export default class ProfileInfo extends React.Component {
   render() {
     return (
       <div className="profile-info">
@@ -53,4 +47,8 @@ class ProfileInfo extends React.Component {
   }
 }
 
-export default ProfileInfo
+ProfileInfo.propTypes = {
+  picture: PropTypes.string.isRequired,
+  name: PropTypes.string,
+  username: PropTypes.string.isRequired
+}

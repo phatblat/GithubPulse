@@ -1,13 +1,10 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Chart from 'chart.js';
 
-require('../styles/ActivityGraph');
+import '../styles/ActivityGraph';
 
-class ActivityGraph extends React.Component {
-  propTypes = {
-    commits: React.PropTypes.arrayOf(React.PropTypes.number).isRequired
-  }
-
+export default class ActivityGraph extends React.Component {
   render() {
     return (
       <div className="activity-graph">
@@ -73,4 +70,6 @@ class ActivityGraph extends React.Component {
   }
 }
 
-export default ActivityGraph;
+ActivityGraph.propTypes = {
+  commits: PropTypes.arrayOf(PropTypes.number).isRequired
+};

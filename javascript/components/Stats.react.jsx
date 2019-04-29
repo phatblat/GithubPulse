@@ -1,17 +1,11 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
-require('../styles/Stats');
+import '../styles/Stats';
 
 var p = (l, n) => n === 1 ? l : l + 's';
 
-class Stats extends React.Component {
-  propTypes = {
-    repos: React.PropTypes.number.isRequired,
-    followers: React.PropTypes.number.isRequired,
-    streak: React.PropTypes.number.isRequired,
-    today: React.PropTypes.number.isRequired
-  }
-
+export default class Stats extends React.Component {
   render() {
     return (
       <div className="stats">
@@ -39,4 +33,9 @@ class Stats extends React.Component {
   }
 }
 
-export default Stats;
+Stats.propTypes = {
+  repos: PropTypes.number.isRequired,
+  followers: PropTypes.number.isRequired,
+  streak: PropTypes.number.isRequired,
+  today: PropTypes.number.isRequired
+}

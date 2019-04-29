@@ -2,7 +2,7 @@ import React from 'react';
 
 import cx from 'classnames';
 
-require('../styles/UserLine');
+import '../styles/UserLine';
 
 class UserLine extends React.Component {
   render() {
